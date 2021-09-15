@@ -13,10 +13,9 @@ import Radio from "@material-ui/core/Radio";
 import RadioGroup from "@material-ui/core/RadioGroup";
 import FormLabel from "@material-ui/core/FormLabel";
 import TextField from "@material-ui/core/TextField";
-import userInfo from "../store/userData";
+import userInfo from "../store/user";
 
 const schema = yup.object().shape({
-    email: yup.string().email("Некоректный Email").required("Поле не должно быть пустым"),
     yearStart: yup.string().required("Поле не должно быть пустым"),
     monthStart: yup.string().required("Поле не должно быть пустым"),
     yearEnd: yup.string().required("Поле не должно быть пустым"),
@@ -56,7 +55,7 @@ const StepTwo = () => {
 
             {
                 exp === 'true' ?
-                    <Form>
+                    <Form onSubmit={handleSubmit(onSubmit)}>
                     <FormLabel>Место работы</FormLabel>
                     <Input
                         ref={register}
@@ -118,12 +117,21 @@ const StepTwo = () => {
                             helperText={errors?.companyName?.message}
                             required
                         />
-                        <TextField id='responsibilities' name='responsibilities' label='Обязанности' variant='outlined' fullWidth multiline rowsMax={5} />
-                        <PrimaryButton onClick={handleSubmit(onSubmit)}>Далее</PrimaryButton>
+                        <TextField id='responsibilities' ref={register} name='responsibilities' label='Обязанности' variant='outlined' fullWidth multiline maxRows={5} />
+                        <div className="btn" style={{display: 'flex', marginBottom: 20}}>
+                            <PrimaryButton style={{margin: 'auto 20px'}}>Назад</PrimaryButton>
+                            <PrimaryButton style={{margin: 'auto 20px'}}>Далее</PrimaryButton>
+                        </div>
                     </Form>
 
 
-                    : <PrimaryButton>Далее</PrimaryButton>
+                    : <div className="btn" style={{display: 'flex', marginBottom: 20}}>
+                        <PrimaryButton onClick={(e)=> {
+                            e.preventDefault()
+                            history.push('/')
+                        }} style={{margin: 'auto 20px'}}>Назад</PrimaryButton>
+                        <PrimaryButton onClick={()=> history.push('/step3')} style={{margin: 'auto 20px'}}>Далее</PrimaryButton>
+                    </div>
 
 
                 }

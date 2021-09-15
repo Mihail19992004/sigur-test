@@ -4,9 +4,8 @@ class User {
     constructor() {
         makeAutoObservable(this)
     }
-    firstStepAdd(values) {
+    firstStepAdd(values: any) {
         this.user = {...this.user, ...values}
-        console.log(this.user)
     }
 }
 
