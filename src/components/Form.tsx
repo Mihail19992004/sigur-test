@@ -1,4 +1,4 @@
-import React from "react";
+import React, { FC, ReactNode } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 
 const useStyles = makeStyles((theme) => ({
@@ -7,8 +7,8 @@ const useStyles = makeStyles((theme) => ({
     marginTop: theme.spacing(1),
   },
 }));
-
-export const Form = ({children, ...props}) => {
+interface FormProp {}
+export const Form = ({ children, ...props }: any) => {
   const styles = useStyles();
 
   return (

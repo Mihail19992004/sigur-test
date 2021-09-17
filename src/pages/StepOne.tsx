@@ -1,5 +1,4 @@
-import React, { useRef, useState } from "react";
-
+import React, { ChangeEvent, useRef, useState } from "react";
 import Typography from "@material-ui/core/Typography";
 import { useForm } from "react-hook-form";
 import * as yup from "yup";
@@ -8,10 +7,8 @@ import { MainContainer } from "../components/MainContainer";
 import { Form } from "../components/Form";
 import { Input } from "../components/Input";
 import { yupResolver } from "@hookform/resolvers";
-
 import Select from "@material-ui/core/Select";
 import MenuItem from "@material-ui/core/MenuItem";
-import InputLabel from "@material-ui/core/InputLabel";
 import { FileInput } from "../components/FileInput";
 import FormLabel from "@material-ui/core/FormLabel";
 import TextField from "@material-ui/core/TextField";
@@ -45,9 +42,11 @@ const schema = yup.object().shape({
 });
 
 const StepOne = observer(() => {
+  const inputRef = useRef<any>();
   const history = useHistory();
-  const [gender, setGender] = useState("Мужской");
-  const [valute, setValute] = useState("RUB");
+  const [photo, setPhoto] = useState<any>();
+  const [gender, setGender] = useState<string>("Мужской");
+  const [valute, setValute] = useState<string>("RUB");
   const { register, control, handleSubmit, errors } = useForm<any>({
     mode: "onBlur",
     resolver: yupResolver(schema),
@@ -56,21 +55,62 @@ const StepOne = observer(() => {
     history.push("/step2");
     userInfo.firstStepAdd(data);
   };
+  const removePhoto = () => {
+    setPhoto(null);
+  };
+  const uploadPhoto = (e: ChangeEvent<HTMLInputElement>) => {
+    const reader = new FileReader();
+    const file: any = e!.target!.files;
+    reader.readAsDataURL(file[0]);
+    reader.onload = (ev) => {
+      setPhoto(ev.target!.result);
+    };
+  };
   return (
     <MainContainer>
       <Typography component="h2" variant="h5">
         1. Основная информация
       </Typography>
       <Form onSubmit={handleSubmit(onSubmit)}>
-        <FileInput name="files" control={control} />
+        {!photo ? (
+          <>
+            <PrimaryButton
+              onClick={(e: any) => {
+                e.preventDefault();
+                inputRef.current.click();
+              }}
+            >
+              Добавить фотографию
+            </PrimaryButton>
+            <input
+              style={{ display: "none" }}
+              id="file"
+              ref={inputRef}
+              type="file"
+              onChange={(e) => {
+                uploadPhoto(e);
+              }}
+            />
+          </>
+        ) : (
+          <PrimaryButton onClick={removePhoto}>Удалить</PrimaryButton>
+        )}
+
+        {photo && (
+          <img
+            src={photo}
+            style={{ maxWidth: 400, maxHeight: 300 }}
+            alt="test"
+          />
+        )}
         <Input
           ref={register}
-          // id="firstName"
-          // type="text"
-          // label="Имя"
-          // name="firstName"
-          // error={!!errors.firstName}
-          // helperText={errors?.firstName?.message}
+          id="firstName"
+          type="text"
+          label="Имя"
+          name="firstName"
+          error={!!errors.firstName}
+          helperText={errors?.firstName?.message}
         />
         <Input
           id="lastName"
@@ -82,31 +122,31 @@ const StepOne = observer(() => {
           ref={register}
         />
         <Input
-          ref={register}
           id="patronymic"
           type="text"
           label="Отчество"
           name="patronymic"
           error={!!errors.patronymic}
           helperText={errors?.patronymic?.message}
+          ref={register}
         />
         <Input
-          ref={register}
           id="birthDate"
-          type="number"
+          type="date"
           label="Дата рождения"
           name="birthDate"
           error={!!errors.birthDate}
           helperText={errors?.birthDate?.message}
+          ref={register}
         />
         <Input
-          ref={register}
-          id="country"
+          id={"country"}
           type="text"
           label="Прописка"
           name="country"
           error={!!errors.country}
           helperText={errors?.country?.message}
+          ref={register}
         />
         <div
           style={{
@@ -119,7 +159,8 @@ const StepOne = observer(() => {
           <Select
             variant="outlined"
             value={gender}
-            onChange={(e) => setGender(e.target.value)}
+            ref={register}
+            onChange={(e) => setGender(e.target.value as string)}
             defaultValue="Муж"
             autoWidth
           >
@@ -148,10 +189,11 @@ const StepOne = observer(() => {
             helperText={errors?.salary?.message}
           />
           <Select
-            style={{ marginTop: 7 }}
+            style={{ marginTop: !!errors.salary ? -15 : 7 }}
             variant="outlined"
             value={valute}
-            onChange={(e) => setValute(e.target.value)}
+            ref={register}
+            onChange={(e) => setValute(e.target.value as string)}
             defaultValue="RUB"
             autoWidth
           >

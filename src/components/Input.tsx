@@ -1,7 +1,7 @@
 import React, { forwardRef } from "react";
 import TextField from "@material-ui/core/TextField";
 
-export const Input = forwardRef<any>((props, ref: any) => {
+export const Input = forwardRef((props: any, ref) => {
   return (
     <TextField
       variant="outlined"

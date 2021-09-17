@@ -11,7 +11,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export const MainContainer = ({ children, ...props }) => {
+export const MainContainer = ({ children, ...props }: any) => {
   const styles = useStyles();
 
   return (

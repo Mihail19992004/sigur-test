@@ -1,4 +1,4 @@
-import React from "react";
+import React, { FC } from "react";
 import Dropzone from "react-dropzone";
 import { Controller } from "react-hook-form";
 import { makeStyles } from "@material-ui/core/styles";
@@ -25,8 +25,12 @@ const useStyles = makeStyles((theme) => ({
     fontSize: "42px",
   },
 }));
-
-export const FileInput = ({ control, name }) => {
+interface Interface {
+  control: any;
+  name: any;
+}
+interface ValueProp {}
+export const FileInput: FC<Interface> = ({ control, name }) => {
   const styles = useStyles();
 
   return (
@@ -50,14 +54,15 @@ export const FileInput = ({ control, name }) => {
             )}
           </Dropzone>
           <List>
-            {value.map((f, index) => (
-              <ListItem key={index}>
-                <ListItemIcon>
-                  <InsertDriveFile />
-                </ListItemIcon>
-                <ListItemText primary={f.name} secondary={f.size} />
-              </ListItem>
-            ))}
+            {value.isArray &&
+              value.map((f: any, index: number) => (
+                <ListItem key={index}>
+                  <ListItemIcon>
+                    <InsertDriveFile />
+                  </ListItemIcon>
+                  <ListItemText primary={f.name} secondary={f.size} />
+                </ListItem>
+              ))}
           </List>
         </>
       )}
