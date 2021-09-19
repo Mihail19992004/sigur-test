@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { ChangeEvent, useState } from "react";
 import { MainContainer } from "../components/MainContainer";
 import { Form } from "../components/Form";
 import { useForm } from "react-hook-form";
@@ -53,6 +53,12 @@ export const StepThree = () => {
   const [educationQuantity, setEducationQuantity] = useState(0);
   //Хук позволяющий переходить по страницам
   const history = useHistory();
+  const arrayLanguage: any[] = [];
+  const [arrayLanguageRedux, setArrayLanguageRedux] = useState<any[]>([]);
+  const [arrayEducationRedux, setArrayEducationRedux] = useState<any[]>([]);
+  const arrayEducation: any[] = [];
+  const [moreLanguage, setMoreLanguage] = useState({});
+  const [moreEducation, setMoreEducation] = useState({});
   const { register, handleSubmit, errors } = useForm({
     mode: "onBlur",
     resolver: yupResolver(schema),
@@ -62,8 +68,51 @@ export const StepThree = () => {
     history.push("/final");
     dispatch({
       type: ActionEnum.USER_ADD_INFO_THIRD_STEP,
-      payload: { ...data },
+      payload: {
+        ...data,
+        moreLanguage: arrayLanguageRedux,
+        moreUniversity: arrayEducationRedux,
+      },
     });
+  };
+  const languageHandler = (e: ChangeEvent<HTMLInputElement>, index: number) => {
+    setMoreLanguage({ ...moreLanguage, [e.target.name]: e.target.value });
+    for (let i = 0; i < index; i++) {
+      let x = Object.fromEntries(
+        Object.entries(moreLanguage).filter(([key, value]) =>
+          key.includes(i.toString())
+        )
+      );
+      if (i !== 1) {
+        for (let key in x) {
+          x[key.replace(key[key.length - 1], "1")] = x[key];
+          delete x[key];
+        }
+      }
+      arrayLanguage.push(x);
+      setArrayLanguageRedux([...arrayLanguage]);
+    }
+  };
+  const educationHandler = (
+    e: ChangeEvent<HTMLInputElement>,
+    index: number
+  ) => {
+    setMoreEducation({ ...moreEducation, [e.target.name]: e.target.value });
+    for (let i = 0; i < index; i++) {
+      let x = Object.fromEntries(
+        Object.entries(moreEducation).filter(([key, value]) =>
+          key.includes(i.toString())
+        )
+      );
+      if (i !== 1) {
+        for (let key in x) {
+          x[key.replace(key[key.length - 1], "1")] = x[key];
+          delete x[key];
+        }
+      }
+      arrayEducation.push(x);
+      setArrayEducationRedux([...arrayEducation]);
+    }
   };
   // Масив включающий в себя инпуты иностранных языков
   const foreignLanguage = [];
@@ -78,6 +127,9 @@ export const StepThree = () => {
           key={i}
           id={"foreignLanguage" + i}
           type="text"
+          onChange={(e: ChangeEvent<HTMLInputElement>) =>
+            languageHandler(e, languageQuantity)
+          }
           label={"Иностранный язык № " + (i + 2)}
           name={"foreignLanguage" + i}
         />
@@ -86,6 +138,9 @@ export const StepThree = () => {
           key={i}
           id={"foreignLanguage" + i + "Level"}
           type="text"
+          onChange={(e: ChangeEvent<HTMLInputElement>) =>
+            languageHandler(e, languageQuantity)
+          }
           label={"Уровень владения иностранным языком № " + (i + 2)}
           name={"foreignLanguage" + i + "Level"}
         />
@@ -102,6 +157,9 @@ export const StepThree = () => {
           ref={register}
           id={"institution" + i}
           type="text"
+          onChange={(e: ChangeEvent<HTMLInputElement>) =>
+            educationHandler(e, educationQuantity)
+          }
           label="Название учебного заведения"
           name={"institution" + i}
         />
@@ -109,6 +167,9 @@ export const StepThree = () => {
           ref={register}
           id={"faculty" + i}
           type="text"
+          onChange={(e: ChangeEvent<HTMLInputElement>) =>
+            educationHandler(e, educationQuantity)
+          }
           label="Факультет"
           name={"faculty" + i}
         />
@@ -116,6 +177,9 @@ export const StepThree = () => {
           ref={register}
           id={"specialization" + i}
           type="text"
+          onChange={(e: ChangeEvent<HTMLInputElement>) =>
+            educationHandler(e, educationQuantity)
+          }
           label="Специализация"
           name={"specialization" + i}
         />
@@ -123,6 +187,9 @@ export const StepThree = () => {
           ref={register}
           id={"yearEndUniversity" + i}
           type="number"
+          onChange={(e: ChangeEvent<HTMLInputElement>) =>
+            educationHandler(e, educationQuantity)
+          }
           label="Год окончания"
           name={"yearEndUniversity" + i}
         />

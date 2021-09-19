@@ -12,7 +12,6 @@ import FormControlLabel from "@material-ui/core/FormControlLabel";
 import Radio from "@material-ui/core/Radio";
 import RadioGroup from "@material-ui/core/RadioGroup";
 import FormLabel from "@material-ui/core/FormLabel";
-import TextField from "@material-ui/core/TextField";
 import { Checkbox } from "@material-ui/core";
 import { useDispatch } from "react-redux";
 import { useTypedSelector } from "../hooks/useTypedSelector";
@@ -52,10 +51,9 @@ const schemaTwo = yup.object().shape({
 
 export const StepTwo = () => {
   const dispatch = useDispatch();
-  const user = useTypedSelector((state) => state.user);
-  console.log(user);
   const [testWork, setTestWork] = useState({});
-  const dt = [];
+
+  const [arrWork, setArrWork] = useState([]);
   const history = useHistory();
   //Стейт позволяющий поставить дату послейдней работы "по настоящее время"
   const [workNow, setWorkNow] = useState(false);
@@ -64,10 +62,13 @@ export const StepTwo = () => {
     mode: "onBlur",
     resolver: yupResolver(workNow ? schemaTwo : schemaOne),
   });
+  const works = [];
+  const workArray: any[] = [];
   const [exp, setExp] = useState("false");
   // Функция срабатывающая при подтверждении формы
   const onSubmit = (data: SecondStepProps) => {
     history.push("/step3");
+
     // Условие срабатывает при  нажатии чекбокса "работаю по настоящее время" и отправляет в стейт менеджер текущий месяц и год
     if (workNow) {
       dispatch({
@@ -76,6 +77,7 @@ export const StepTwo = () => {
           ...data,
           yearEnd: new Date().getFullYear(),
           monthEnd: new Date().getMonth() + 1,
+          works: arrWork,
         },
       });
     } else if (!workNow) {
@@ -83,64 +85,88 @@ export const StepTwo = () => {
         type: ActionEnum.USER_ADD_INFO_SECOND_STEP,
         payload: {
           ...data,
+          works: arrWork,
         },
       });
     }
   };
+
   // Функция которая изменяет состояние отвечающее за radio button c с опытом работы, а так же за условную отрисовку формы опыта работы
   const handleRadio = (e: ChangeEvent<HTMLInputElement>) => {
     setExp(e.target.value);
   };
-  const works = [];
 
+  const workHandler = (e: ChangeEvent<HTMLInputElement>, index: number) => {
+    setTestWork({ ...testWork, [e.target.name]: e.target.value });
+    for (let i = 0; i < index; i++) {
+      let x = Object.fromEntries(
+        Object.entries(testWork).filter(([key, value]) =>
+          key.includes(i.toString())
+        )
+      );
+      if (i !== 1) {
+        for (let key in x) {
+          x[key.replace(key[key.length - 1], "1")] = x[key];
+          delete x[key];
+        }
+      }
+      workArray.push(x);
+      // @ts-ignore
+      setArrWork([...workArray]);
+      console.log(arrWork);
+    }
+  };
   for (let i = 0; i < moreWorks; i++) {
     const item = (
       <div className="more-works">
         <FormLabel>Место работы</FormLabel>
         <Input
           ref={register}
-          onChange={() => console.log("as")}
+          onChange={(e: ChangeEvent<HTMLInputElement>) =>
+            workHandler(e, moreWorks)
+          }
           id="monthStart1"
           type="number"
           label="Месяц начала работы"
           name={"monthStart" + i}
-          error={!!errors.monthStart}
-          helperText={errors?.monthStart?.message}
           required
         />
         <Input
           ref={register}
+          onChange={(e: ChangeEvent<HTMLInputElement>) =>
+            workHandler(e, moreWorks)
+          }
           id="yearStart1"
           type="number"
           label="Год начала работы"
           name={"yearStart" + i}
-          error={!!errors.yearStart}
-          helperText={errors?.yearStart?.message}
           required
         />
         <Input
           ref={register}
+          onChange={(e: ChangeEvent<HTMLInputElement>) =>
+            workHandler(e, moreWorks)
+          }
           id="monthEnd1"
           type="number"
           label={workNow ? null : "Месяц окончания работы"}
           name={"monthEnd" + i}
           value={workNow ? new Date().getMonth() + 1 : null}
-          error={workNow ? null : !!errors.monthEnd}
-          helperText={workNow ? null : errors?.monthEnd?.message}
-          required={!workNow}
           disabled={workNow}
+          required
         />
         <Input
           ref={register}
           id="yearEnd1"
+          onChange={(e: ChangeEvent<HTMLInputElement>) =>
+            workHandler(e, moreWorks)
+          }
           type="number"
           label={workNow ? null : "Год окончания работы"}
           name={"yearEnd" + i}
           disabled={workNow}
           value={workNow ? new Date().getFullYear() : null}
-          error={workNow ? null : !!errors.yearEnd}
-          helperText={workNow ? null : errors?.yearEnd?.message}
-          required={!workNow}
+          required
         />
         <FormControlLabel
           onChange={() => {
@@ -154,28 +180,33 @@ export const StepTwo = () => {
         />
         <Input
           ref={register}
+          onChange={(e: ChangeEvent<HTMLInputElement>) =>
+            workHandler(e, moreWorks)
+          }
           id="position"
           type="text"
-          label="Должность1"
-          name="position"
-          error={!!errors.position}
-          helperText={errors?.position?.message}
+          label="Должность"
+          name={"position" + i}
           required
         />
         <Input
           ref={register}
+          onChange={(e: ChangeEvent<HTMLInputElement>) =>
+            workHandler(e, moreWorks)
+          }
           id="companyName1"
           type="text"
           label="Название компании"
-          name="companyName1"
-          error={!!errors.companyName}
-          helperText={errors?.companyName?.message}
+          name={"companyName" + i}
           required
         />
         <Input
           id="responsibilities1"
+          onChange={(e: ChangeEvent<HTMLInputElement>) =>
+            workHandler(e, moreWorks)
+          }
           ref={register}
-          name="responsibilities1"
+          name={"responsibilities" + i}
           label="Обязанности"
           variant="outlined"
           type="text"
@@ -291,6 +322,7 @@ export const StepTwo = () => {
           <PrimaryButton
             onClick={(e: any) => {
               e.preventDefault();
+
               setMoreWorks(moreWorks + 1);
             }}
           >

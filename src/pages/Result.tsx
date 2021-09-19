@@ -83,6 +83,38 @@ const Result = observer(() => {
             <h2>Обязанности: </h2>
             <h3>{user.responsibilities}</h3>
           </div>
+          {user.works?.map((e) => (
+            <>
+              <div className="info-item">
+                <h2> Месяц начала работы</h2>
+                <h3>{e.monthStart1}</h3>
+              </div>
+              <div className="info-item">
+                <h2> Год начала работы</h2>
+                <h3>{e.yearStart1}</h3>
+              </div>
+              <div className="info-item">
+                <h2> Месяц окончания работы</h2>
+                <h3>{e.monthEnd1}</h3>
+              </div>
+              <div className="info-item">
+                <h2> Год окончания работы</h2>
+                <h3>{e.monthStart1}</h3>
+              </div>
+              <div className="info-item">
+                <h2> Название компании</h2>
+                <h3>{e.companyName1}</h3>
+              </div>
+              <div className="info-item">
+                <h2> Должность</h2>
+                <h3>{e.position1}</h3>
+              </div>
+              <div className="info-item">
+                <h2> Обязанности</h2>
+                <h3>{e.responsibilities1}</h3>
+              </div>
+            </>
+          ))}
           <div className="info-item">
             <h2>Уровень образования: </h2>
             <h3>{user.education}</h3>
@@ -99,6 +131,18 @@ const Result = observer(() => {
             <h2>Уровень владения иностранным языком:</h2>
             <h3>{user.foreignLanguageLevel}</h3>
           </div>
+          {user.moreLanguage?.map((e) => (
+            <>
+              <div className="info-item">
+                <h2>Иностранный язык</h2>
+                <h3>{e.foreignLanguage1}</h3>
+              </div>
+              <div className="info-item">
+                <h2>Уровень владения иностранным языком</h2>
+                <h3>{e.foreignLanguageLevel1}</h3>
+              </div>
+            </>
+          ))}
           <div className="info-item">
             <h2>Название учебного заведения: </h2>
             <h3>{user.institution}</h3>
@@ -115,6 +159,26 @@ const Result = observer(() => {
             <h2>Год окончания: </h2>
             <h3>{user.yearEndUniversity}</h3>
           </div>
+          {user.moreUniversity?.map((e) => (
+            <>
+              <div className="info-item">
+                <h2>Название учебного заведения:</h2>
+                <h3>{e.institution1}</h3>
+              </div>
+              <div className="info-item">
+                <h2>Факультет:</h2>
+                <h3>{e.faculty1}</h3>
+              </div>
+              <div className="info-item">
+                <h2>Специализация</h2>
+                <h3>{e.specialization1}</h3>
+              </div>
+              <div className="info-item">
+                <h2>Год окончания</h2>
+                <h3>{e.yearEndUniversity1}</h3>
+              </div>
+            </>
+          ))}
         </div>
       </div>
     </>
