@@ -4,7 +4,7 @@
 **npm start** <br />
 Используемые технологии:
 - React
-- MobX
+- Redux
 - TypeScript
 - Material-UI
 - React Hook Form
