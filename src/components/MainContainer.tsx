@@ -1,7 +1,7 @@
 import React from "react";
 import Container from "@material-ui/core/Container";
 import { makeStyles } from "@material-ui/core/styles";
-
+// Написание хука для стилизации material-ui компонента
 const useStyles = makeStyles((theme) => ({
   root: {
     marginTop: theme.spacing(4),
@@ -10,7 +10,7 @@ const useStyles = makeStyles((theme) => ({
     alignItems: "center",
   },
 }));
-
+//Создание контейнера
 export const MainContainer = ({ children, ...props }: any) => {
   const styles = useStyles();
 

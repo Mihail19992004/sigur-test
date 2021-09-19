@@ -1,66 +1,123 @@
 import React from "react";
 import { observer } from "mobx-react-lite";
-import userData from "../store/user";
-import { MainContainer } from "../components/MainContainer";
-import FormLabel from "@material-ui/core/FormLabel";
 import { Typography } from "@material-ui/core";
-interface UserProps {
-  firstName: string | null;
-  photo: string | null;
-}
+import { useTypedSelector } from "../hooks/useTypedSelector";
+
 const Result = observer(() => {
-  const user: any = { ...userData.user };
+  const user = useTypedSelector((state) => state.user);
   console.log(user);
   return (
-    <div>
-      <MainContainer>
-        <Typography component="h2" variant="h5">
-          Обзор
-        </Typography>
-        <img src={user.photo} alt="" />
-        <FormLabel>Имя: {user.firstName}</FormLabel>
-        <FormLabel>Фамилия: {user.lastName}</FormLabel>
-        <FormLabel>Отчество: {user.patronymic}</FormLabel>
-        <FormLabel>Город проживания: {user.city}</FormLabel>
-        <FormLabel>Пол: {user.gender}</FormLabel>
-        <FormLabel>Дата рождения: {user.birthDate}</FormLabel>
-        <FormLabel>Гражданство: {user.country}</FormLabel>
-        <FormLabel>Желаемая должнось: {user.position}</FormLabel>
-        <FormLabel>Желаемая зарплата: {user.salary}</FormLabel>
-        <FormLabel>О себе: {user.about}</FormLabel>
-        <FormLabel>Месяц начала работы: {user.monthStart}</FormLabel>
-        <FormLabel>Год начала работы: {user.yearStart}</FormLabel>
-        <FormLabel>Месяц окончания работы: {user.monthEnd}</FormLabel>
-        <FormLabel>Год окончания работы: {user.yearEnd}</FormLabel>
-        <FormLabel>Название компании: {user.companyName}</FormLabel>
-        <FormLabel>Должность: {user.position}</FormLabel>
-        <FormLabel>Обязанности: {user.responsibilities}</FormLabel>
-        <FormLabel>Уровень образования: {user.education}</FormLabel>
-        <FormLabel>Родной язык: {user.nativeLanguage}</FormLabel>
-        <FormLabel>Иностранный язык: {user.foreignLanguage}</FormLabel>
-        <FormLabel>
-          Уровень владения иностранным языком: {user.foreignLanguageLevel}
-        </FormLabel>
-        <FormLabel>Название учебного заведения: {user.institution}</FormLabel>
-        <FormLabel>Факультет: {user.faculty}</FormLabel>
-        <FormLabel>Специализация: {user.specialization}</FormLabel>
-        <FormLabel>Год окончания: {user.yearEndUniversity}</FormLabel>
-        {/*    <p>Имя: {user.firstName}</p>*/}
-        {/*    <p>Фамилия: {user.lastName}</p>*/}
-        {/*    <p>Отчество: {user.patronymic}</p>*/}
-        {/*    <p>Город проживания: {user.city}</p>*/}
-        {/*    <p>Дата рождения: {user.birthDate}</p>*/}
-        {/*    <p>Пол: {user.gender}</p>*/}
-        {/*    <p>Гражданство: {user.country}</p>*/}
-        {/*    <p>Желаемая должнось: {user.position}</p>*/}
-        {/*    <p>Желаемая зарплата: {user.salary}</p>*/}
-        {/*    <p>О себе: {user.about}</p>*/}
-        {/*    <p>Месяц начала работы: {user.mounthStart}</p>*/}
-        {/*    <p>Год начала работы</p>*/}
-        {/*    <p>Месяц окончания работы</p>*/}
-        {/*    <p>Год окончания работы</p>*/}
-      </MainContainer>
-    </div>
+    <>
+      <Typography style={{ margin: "0 auto" }} component="h2" variant="h5">
+        Обзор
+      </Typography>
+      <div className="main-result">
+        <div className="img-desc">
+          <div className="img">
+            <img src={user.photo} alt="" />
+          </div>
+          <h3>О себе: {user.about}</h3>
+        </div>
+        <div className="info-result">
+          <div className="info-item">
+            <h2>Имя:</h2>
+            <h3> {user.firstName}</h3>
+          </div>
+          <div className="info-item">
+            <h2>Фамилия:</h2>
+            <h3>{user.lastName}</h3>
+          </div>
+          <div className="info-item">
+            <h2>Отчество:</h2>
+            <h3>{user.patronymic}</h3>
+          </div>
+          <div className="info-item">
+            <h2>Город проживания:</h2>
+            <h3> {user.city}</h3>
+          </div>
+          <div className="info-item">
+            <h2>Пол:</h2>
+            <h3> {user.gender}</h3>
+          </div>
+          <div className="info-item">
+            <h2>Дата рождения: </h2>
+            <h3>{user.birthDate}</h3>
+          </div>
+          <div className="info-item">
+            <h2>Гражданство: </h2>
+            <h3>{user.country}</h3>
+          </div>
+          <div className="info-item">
+            <h2>Желаемая должнось: </h2>
+            <h3>{user.position}</h3>
+          </div>
+          <div className="info-item">
+            <h2>Желаемая зарплата: </h2>
+            <h3>{user.salary}</h3>
+          </div>
+          <div className="info-item">
+            <h2>Месяц начала работы: </h2>
+            <h3>{user.monthStart}</h3>
+          </div>
+          <div className="info-item">
+            <h2>Год начала работы: </h2>
+            <h3>{user.yearStart}</h3>
+          </div>
+          <div className="info-item">
+            <h2>Месяц окончания работы: </h2>
+            <h3>{user.monthEnd}</h3>
+          </div>
+          <div className="info-item">
+            <h2>Год окончания работы: </h2>
+            <h3>{user.yearEnd}</h3>
+          </div>
+          <div className="info-item">
+            <h2>Название компании: </h2>
+            <h3>{user.companyName}</h3>
+          </div>
+          <div className="info-item">
+            <h2>Должность: </h2>
+            <h3>{user.position}</h3>
+          </div>
+          <div className="info-item">
+            <h2>Обязанности: </h2>
+            <h3>{user.responsibilities}</h3>
+          </div>
+          <div className="info-item">
+            <h2>Уровень образования: </h2>
+            <h3>{user.education}</h3>
+          </div>
+          <div className="info-item">
+            <h2>Родной язык: </h2>
+            <h3>{user.nativeLanguage}</h3>
+          </div>
+          <div className="info-item">
+            <h2>Иностранный язык: </h2>
+            <h3>{user.foreignLanguage}</h3>
+          </div>
+          <div className="info-item">
+            <h2>Уровень владения иностранным языком:</h2>
+            <h3>{user.foreignLanguageLevel}</h3>
+          </div>
+          <div className="info-item">
+            <h2>Название учебного заведения: </h2>
+            <h3>{user.institution}</h3>
+          </div>
+          <div className="info-item">
+            <h2>Факультет: </h2>
+            <h3>{user.faculty}</h3>
+          </div>
+          <div className="info-item">
+            <h2>Специализация: </h2>
+            <h3>{user.specialization}</h3>
+          </div>
+          <div className="info-item">
+            <h2>Год окончания: </h2>
+            <h3>{user.yearEndUniversity}</h3>
+          </div>
+        </div>
+      </div>
+    </>
   );
 });
 

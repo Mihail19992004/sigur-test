@@ -29,7 +29,7 @@ interface Interface {
   control: any;
   name: any;
 }
-interface ValueProp {}
+
 export const FileInput: FC<Interface> = ({ control, name }) => {
   const styles = useStyles();
 

@@ -9,8 +9,9 @@ import { PrimaryButton } from "../components/PrimaryButton";
 import { yupResolver } from "@hookform/resolvers";
 import * as yup from "yup";
 import { useHistory } from "react-router-dom";
-import userInfo from "../store/user";
-
+import { useDispatch } from "react-redux";
+import { ActionEnum } from "../types/user";
+//Модель валидации данных формы
 const schema = yup.object().shape({
   education: yup
     .string()
@@ -44,19 +45,31 @@ const schema = yup.object().shape({
 });
 
 export const StepThree = () => {
+  const dispatch = useDispatch();
+
+  //Стейт позволяющий добавить несколько иностранных языков
   const [languageQuantity, setLanguageQuantity] = useState(0);
+  //Стейт позволяющий добавить несколько учебных заведений
   const [educationQuantity, setEducationQuantity] = useState(0);
+  //Хук позволяющий переходить по страницам
   const history = useHistory();
   const { register, handleSubmit, errors } = useForm({
     mode: "onBlur",
     resolver: yupResolver(schema),
   });
+  //Метод срабатывающий при подтверждении формы
   const onSubmit = (data: any) => {
     history.push("/final");
-    userInfo.firstStepAdd(data);
+    dispatch({
+      type: ActionEnum.USER_ADD_INFO_THIRD_STEP,
+      payload: { ...data },
+    });
   };
+  // Масив включающий в себя инпуты иностранных языков
   const foreignLanguage = [];
+  // Масив включающий в себя инпуты учебных заведений
   const education = [];
+  //Цикл позволяищий добавлять в массив инпуты иностранных языков
   for (let i = 0; i < languageQuantity; i++) {
     const item = (
       <div className="languageForeign" style={{ margin: "40px auto" }}>
@@ -80,6 +93,7 @@ export const StepThree = () => {
     );
     foreignLanguage.push(item);
   }
+  //Цикл позволяищий добавлять в массив инпуты учебных заведений
   for (let i = 0; i < educationQuantity; i++) {
     const item = (
       <div style={{ margin: "40px auto" }} className="education">
@@ -160,6 +174,7 @@ export const StepThree = () => {
                 name={"foreignLanguageLevel"}
               />
             </>
+            {/*Добавление в JSX иностранных языков*/}
             {foreignLanguage}
             <PrimaryButton
               onClick={(e: any) => {
@@ -214,6 +229,7 @@ export const StepThree = () => {
         />
         {
           <div className="education_main">
+            {/*Добавление в JSX Учебных заведений*/}
             {education}
             <PrimaryButton
               onClick={(e: any) => {

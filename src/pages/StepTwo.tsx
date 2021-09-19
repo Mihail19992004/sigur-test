@@ -13,9 +13,11 @@ import Radio from "@material-ui/core/Radio";
 import RadioGroup from "@material-ui/core/RadioGroup";
 import FormLabel from "@material-ui/core/FormLabel";
 import TextField from "@material-ui/core/TextField";
-import userInfo from "../store/user";
 import { Checkbox } from "@material-ui/core";
-
+import { useDispatch } from "react-redux";
+import { useTypedSelector } from "../hooks/useTypedSelector";
+import { ActionEnum, SecondStepProps } from "../types/user";
+//Создание схемы валидации данных
 const schemaOne = yup.object().shape({
   yearStart: yup.string().required("Поле не должно быть пустым"),
   monthStart: yup
@@ -49,27 +51,140 @@ const schemaTwo = yup.object().shape({
 });
 
 export const StepTwo = () => {
+  const dispatch = useDispatch();
+  const user = useTypedSelector((state) => state.user);
+  console.log(user);
+  const [testWork, setTestWork] = useState({});
+  const dt = [];
   const history = useHistory();
+  //Стейт позволяющий поставить дату послейдней работы "по настоящее время"
   const [workNow, setWorkNow] = useState(false);
+  const [moreWorks, setMoreWorks] = useState(0);
   const { register, handleSubmit, errors } = useForm({
     mode: "onBlur",
     resolver: yupResolver(workNow ? schemaTwo : schemaOne),
   });
   const [exp, setExp] = useState("false");
-
-  const onSubmit = (data: any) => {
+  // Функция срабатывающая при подтверждении формы
+  const onSubmit = (data: SecondStepProps) => {
     history.push("/step3");
-    userInfo.firstStepAdd(data);
+    // Условие срабатывает при  нажатии чекбокса "работаю по настоящее время" и отправляет в стейт менеджер текущий месяц и год
     if (workNow) {
-      userInfo.firstStepAdd({
-        yearEnd: new Date().getFullYear(),
-        monthEnd: new Date().getMonth() + 1,
+      dispatch({
+        type: ActionEnum.USER_ADD_INFO_SECOND_STEP,
+        payload: {
+          ...data,
+          yearEnd: new Date().getFullYear(),
+          monthEnd: new Date().getMonth() + 1,
+        },
+      });
+    } else if (!workNow) {
+      dispatch({
+        type: ActionEnum.USER_ADD_INFO_SECOND_STEP,
+        payload: {
+          ...data,
+        },
       });
     }
   };
+  // Функция которая изменяет состояние отвечающее за radio button c с опытом работы, а так же за условную отрисовку формы опыта работы
   const handleRadio = (e: ChangeEvent<HTMLInputElement>) => {
     setExp(e.target.value);
   };
+  const works = [];
+
+  for (let i = 0; i < moreWorks; i++) {
+    const item = (
+      <div className="more-works">
+        <FormLabel>Место работы</FormLabel>
+        <Input
+          ref={register}
+          onChange={() => console.log("as")}
+          id="monthStart1"
+          type="number"
+          label="Месяц начала работы"
+          name={"monthStart" + i}
+          error={!!errors.monthStart}
+          helperText={errors?.monthStart?.message}
+          required
+        />
+        <Input
+          ref={register}
+          id="yearStart1"
+          type="number"
+          label="Год начала работы"
+          name={"yearStart" + i}
+          error={!!errors.yearStart}
+          helperText={errors?.yearStart?.message}
+          required
+        />
+        <Input
+          ref={register}
+          id="monthEnd1"
+          type="number"
+          label={workNow ? null : "Месяц окончания работы"}
+          name={"monthEnd" + i}
+          value={workNow ? new Date().getMonth() + 1 : null}
+          error={workNow ? null : !!errors.monthEnd}
+          helperText={workNow ? null : errors?.monthEnd?.message}
+          required={!workNow}
+          disabled={workNow}
+        />
+        <Input
+          ref={register}
+          id="yearEnd1"
+          type="number"
+          label={workNow ? null : "Год окончания работы"}
+          name={"yearEnd" + i}
+          disabled={workNow}
+          value={workNow ? new Date().getFullYear() : null}
+          error={workNow ? null : !!errors.yearEnd}
+          helperText={workNow ? null : errors?.yearEnd?.message}
+          required={!workNow}
+        />
+        <FormControlLabel
+          onChange={() => {
+            setWorkNow(!workNow);
+            console.log(workNow);
+          }}
+          control={
+            <Checkbox color="primary" checked={workNow} name="hasPhone" />
+          }
+          label="По настоящее время"
+        />
+        <Input
+          ref={register}
+          id="position"
+          type="text"
+          label="Должность1"
+          name="position"
+          error={!!errors.position}
+          helperText={errors?.position?.message}
+          required
+        />
+        <Input
+          ref={register}
+          id="companyName1"
+          type="text"
+          label="Название компании"
+          name="companyName1"
+          error={!!errors.companyName}
+          helperText={errors?.companyName?.message}
+          required
+        />
+        <Input
+          id="responsibilities1"
+          ref={register}
+          name="responsibilities1"
+          label="Обязанности"
+          variant="outlined"
+          type="text"
+        />
+      </div>
+    );
+    works.push(item);
+  }
+
   return (
     <MainContainer>
       <Typography component="h2" variant="h5">
@@ -87,7 +202,7 @@ export const StepTwo = () => {
           label="Есть опыт работы"
         />
       </RadioGroup>
-
+      {/*Если рвдио кнопка поставлена на том что опыт работы есть то отрисовывается форма для заполнения*/}
       {exp === "true" ? (
         <Form onSubmit={handleSubmit(onSubmit)}>
           <FormLabel>Место работы</FormLabel>
@@ -165,16 +280,22 @@ export const StepTwo = () => {
             helperText={errors?.companyName?.message}
             required
           />
-          <TextField
-            id="responsibilities"
+          <Input
             ref={register}
-            name="responsibilities"
+            id="responsibilities"
+            type="text"
             label="Обязанности"
-            variant="outlined"
-            fullWidth
-            multiline
-            maxRows={5}
+            name="responsibilities"
           />
+          {works}
+          <PrimaryButton
+            onClick={(e: any) => {
+              e.preventDefault();
+              setMoreWorks(moreWorks + 1);
+            }}
+          >
+            Добавить место рабаты
+          </PrimaryButton>
           <div className="btn" style={{ display: "flex", marginTop: 20 }}>
             <PrimaryButton style={{ margin: "auto 20px" }}>Назад</PrimaryButton>
             <PrimaryButton style={{ margin: "auto 20px" }}>Далее</PrimaryButton>
